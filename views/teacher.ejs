@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>教师端</title>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <script  src="roll-script.js"></script>
+    <link rel="stylesheet" type="text/css" href="bootstrap.css"/>
+    <!--美化包-->
+    <link rel="stylesheet" type="text/css" href="roll-style.css">
+    <script>
+        $('.nav').find('a').each(function () {
+            if (this.href == document.location.href || document.location.href.search(this.href) >= 0) {
+                $(this).parent().addClass('active'); // this.className = 'active';
+            }
+        });
+    </script>
+    <script>
+        $(function () {
+            var url = location.search; //这一条语句获取了包括问号开始到参数的最后，不包括前面的路径
+            var params = url.substr(1);//去掉问号
+            var pa = params.split("&");
+            var s = new Object();
+            for(var i = 0; i < pa.length; i ++){
+                s[pa[i].split("=")[0]] = unescape(pa[i].split("=")[1]);
+            }
+            alert(s.teacherno+"欢迎发布任务");
+            $("#teacherno").val(s.teacherno);
+        })
+    </script>
+</head>
+<body>
+<!--顶部导航栏-->
+<!-- |以下导航栏区域   -->
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <a href="#" class="navbar-brand">智慧英语协同写作教师端</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li ><a href="http://47.94.108.20:8080/BuptCreationEE/pages/Teacher/My.jsp">我的</a></li>
+                <li ><a href="http://47.94.108.20:8082/teacherpage">任务发布</a></li>
+                <li ><a href="http://47.94.108.20:8080/BuptCreationEE/pages/Teacher/Showblog.jsp">作品评论</a></li>
+                <li ><a href="http://47.94.108.20:8080/BuptCreationEE/pages/Teacher/Group.jsp">小组管理</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<br/>
+<br/>
+<!--高亮显示-->
+
+
+<section id="section01" class="demo">
+    <div class="myForm" style="width:100%;height:100%;background: rgba(225,225,225,0.1)">
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <form class="form-horizontal" role="form" action="/teacher/submitdata"  method="post">                  <!--发送信息给后端-->
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label" style="color: white">当前的教师账号</label>
+                <div class="col-sm-10">
+                    <input class="form-control" type="text" name="teacherno" id="teacherno" class="theonlyteacherno" placeholder=""  value="">
+                </div>
+            </div>
+            <br/>
+            <div class="form-group">
+                <label class="col-sm-2 control-label" style="color:white;">文章号：</label>
+                <div class="col-sm-10">
+                    <input class="form-control" id="focusedInput" type="text" name="textno" placeholder="文章号" value="<%=data.list.length+1%>">
+                </div>
+            </div>
+            <br/>
+            <div class="form-group">
+                <label class="col-sm-2 control-label" style="color:white;">文章标题：</label>
+                <div class="col-sm-10">
+                    <input class="form-control" id="focusedInput" type="text" name="texttitle" placeholder="文章题目" value="">
+                </div>
+            </div>
+            <br/>
+            <!--表单需要更改-->
+            <div class="form-group">
+
+                <label class="col-sm-2 control-label" style="color:white;">发布任务的小组名称：</label>
+                <div class="col-sm-10">
+                    <select class="form-control" id="focusedInput" type="text" name="groupno" value="" placeholder="请输入小组的编号">
+                       <%for(var i=0;i<arrays.length;i++){%>
+                            <option value="<%=arrays[i]%>"><%=arrays[i]%></option>
+                        <%}%>
+                    </select>
+                </div>
+            </div>
+            <br>
+            <div class="form-group">
+                <label class="col-sm-2 control-label" style="color: white">请输入文章的写作要求：</label>
+                <div class="col-sm-10" >
+                    <input style="overflow-y:scroll;height: 400px" class="form-control" id="focusedInput" type="text" name="description" value="" placeholder="请输入文章的写作要求" value="该输入框获得焦点...">
+                </div>
+            </div>
+            <br>
+            <div class="form-group">
+                <label class="col-sm-2 control-label" style="color: white">点击按钮发布任务：</label>
+                <div class="col-sm-10">
+                    <input class="btn btn-primary" type="submit" value="发布任务">
+                </div>
+            </div>
+        </form>
+        <a href="#section10"><span></span>查看任务详情</a>
+    </div>
+</section>
+<section id="section10" class="demo">
+    <div class="myShow" style="width: 100%;height: 100%; background: rgba(255,255,255,0.2)">
+        <br/>
+        <br/>
+        <div id="preview" >
+            <h3 style="color: white">任务浏览</h3>
+            <span style="color:white"><%=data.teacher %></span><br>
+            <% data.list.map(function(item,index){ %>
+                <br>
+                <span style="color: white">任务发布者:<%= item.teacherno %></span>
+                &nbsp;&nbsp;&nbsp;
+                <span style="color: white">文章编号:  <%= item.textno %> </span>
+                &nbsp;&nbsp;&nbsp;
+                <span style="color: white">参与小组:<%= item.groupno %></span>
+                <button class="button button4" onclick="javascript:window.location.href='/lookarticle/showarticle?thetitle=<%=item.textno%>'" >查看</button>
+            <%})%>
+
+        </div>
+    </div>
+    <a href="#section01"><span></span></a>
+</section>
+
+<!--美化包-->
+<style>
+    #preview{
+        padding:10px 20px;
+        border:1px dotted #666666;
+        margin: 30px 0;
+    }
+    h3,span{
+        margin-top:10px ;
+    }
+    .myForm{
+        position: absolute;
+        z-index: 2;
+        display: inline-block;
+        letter-spacing: .1em;
+        text-decoration: none;
+        transition: opacity .3s;
+    }
+    .myShow{
+        position: absolute;
+        z-index: 2;
+        display: inline-block;
+        letter-spacing: .1em;
+        text-decoration: none;
+        transition: opacity .3s;
+    }
+
+    .button4 {
+        background-color: white;
+        color: black;
+        border: 2px solid #e7e7e7;
+        width: 64px;
+        height: 40px;
+    }
+
+    .button4:hover {background-color: #e7e7e7;}
+    #preview{
+        width: 80%;
+        box-shadow: 10px 10px 5px #888888;
+        gap: 20px;
+    }
+</style>
+</body>
+</html>

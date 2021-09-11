@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>文章展示</title>
+    <script type="text/javascript" src="/echarts.js"></script>
+    <script type="text/javascript" src="/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../style-back.css">
+    <link rel="stylesheet" type="text/css" href="../bootstrap.css">
+    <!--    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>-->
+    <style>
+        textarea{
+            margin: 50px;
+            /*文字太多可以触发滚动条*/
+            overflow-y: scroll;
+        }
+        input{
+            margin: 50px;
+        }
+        #round
+        {   	border:15px solid transparent;
+            padding:10px 20px;
+            -webkit-border-image:url(border.png) 30 30 round; /* Safari 5 and older */
+            -o-border-image:url(border.png) 30 30 round; /* Opera */
+            border-image:url(border.png) 30 30 round;
+        }
+    </style>
+<!--    <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>-->
+
+</head>
+<body>
+<div class="cr cr-top cr-left cr-sticky cr-red">Hello</div>
+<div class="cr cr-top cr-right cr-sticky cr-blue">hi</div>
+<div class="cr cr-bottom cr-left cr-sticky cr-orange">hello there</div>
+<div class="cr cr-bottom cr-right cr-sticky cr-green">hei</div>
+<div style="flex-direction: column">
+    <div class="col-sm-offset-3 col-sm-6">
+        <label class="col-sm-offset-1">文章编号:</label>
+        <input class="form-control" id="round" type="text" value="<%=data.textno%>" disabled="true">
+    </div>
+    <div class="col-sm-offset-3 col-sm-6">
+        <label class="col-sm-offset-1">文章标题:</label>
+        <input class="form-control" id="round" type="text" value="<%=data.texttitle%>" disabled="true">
+    </div>
+    <div class="col-sm-offset-3 col-sm-6">
+        <label class="col-sm-offset-1">文章反思区:</label>
+        <input class="form-control" id="round" type="text" value="<%=data.contentofreflection%>" disabled="true">
+    </div>
+    <div class="col-sm-offset-3 col-sm-6">
+        <label class="col-sm-offset-1">文章提示:</label>
+        <input class="form-control" id="round" type="text" value="<%=data.description%>" disabled="true">
+    </div>
+    <div class="col-sm-offset-3 col-sm-6">
+        <label class="col-sm-offset-1">实时文章:</label>
+        <textarea style="width: 100%;height: 500px" disabled="true"><%=data.content%></textarea>
+    </div>
+    <div class="col-sm-offset-3 col-sm-6">
+        <label class="col-sm-offset-1">第一稿:</label>
+        <textarea style="width: 100%;height: 500px" ><%=data.contentofone%></textarea>
+    </div>
+    <div class="col-sm-offset-3 col-sm-6">
+        <label class="col-sm-offset-1">第二稿:</label>
+        <textarea style="width: 100%;height: 500px" ><%=data.contentoftwo%></textarea>
+    </div>
+    <div class="col-sm-offset-3 col-sm-6">
+        <label class="col-sm-offset-1">终稿:</label>
+        <textarea style="width: 100%;height: 500px" ><%=data.contentofthree%></textarea>
+    </div>
+    <!--  换行调整样式  -->
+    <br/><br/><br/><br/>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <br/>                                                               <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <br/>                                                               <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <br/><br/><br/><br/>
+    <!--以上 换行很重要    -->
+    <div class="col-sm-offset-2" style="">
+
+        <button onclick="javascript:window.location.href='/teacher/allowstudenttoshow?type='+'1y'+'&data=<%=JSON.stringify(data)%>'" >禁止学生端显示修改次数的可视化图表</button>
+        <div class="chart" style="height: 700px;width: 1000px" id="changes"></div>
+        <button onclick="javascript:window.location.href='/teacher/allowstudenttoshow?type='+'1n'+'&data=<%=JSON.stringify(data) %>'">允许学生端显示该可视化图表</button>>
+        <div class="chart" style="height: 700px;width: 1000px" id="changes"></div>
+        <button onclick="javascript:window.location.href='/teacher/allowstudenttoshow?type='+'2y'+'&data=<%=JSON.stringify(data)%>'" >禁止学生端显示修改次数的可视化图表</button>
+        <div class="chart" style="height: 700px;width: 1000px" id="loginchoices"></div>
+        <button onclick="javascript:window.location.href='/teacher/allowstudenttoshow?type='+'2n'+'&data=<%=JSON.stringify(data) %>'">允许学生端显示该可视化图表</button>
+        <div class="chart" style="height: 700px;width: 1000px" id="loginchoices"></div>
+        <button onclick="javascript:window.location.href='/teacher/allowstudenttoshow?type='+'3y'+'&data=<%=JSON.stringify(data)%>'" >禁止学生端显示修改次数的可视化图表</button>
+        <div class="chart" style="height: 700px;width: 1000px" id="talks"></div>
+        <button onclick="javascript:window.location.href='/teacher/allowstudenttoshow?type='+'3n'+'&data=<%=JSON.stringify(data) %>'">允许学生端显示该可视化图表</button>
+        <div class="chart" style="height: 700px;width: 1000px" id="talks"></div>
+        <button onclick="javascript:window.location.href='/teacher/allowstudenttoshow?type='+'4y'+'&data=<%=JSON.stringify(data)%>'" >禁止学生端显示修改次数的可视化图表</button>
+        <div class="chart" style="height: 700px;width: 1000px" id="socials"></div>
+        <button onclick="javascript:window.location.href='/teacher/allowstudenttoshow?type='+'4n'+'&data=<%=JSON.stringify(data) %>'">允许学生端显示该可视化图表</button>
+        <div class="chart" style="height: 700px;width: 1000px" id="socials"></div>
+
+        <div class="chart" style="height: 700px;width: 1000px" id="changes"></div>
+        <div class="chart" style="height: 700px;width: 1000px" id="loginchoices"></div>
+        <div class="chart" style="height: 700px;width: 1000px" id="talks"></div>
+        <div style="width: 1000px;height: 1000px;border: 1px solid green" id="socials"></div>
+
+    </div>
+</div>
+</body>
+</html>
+
+<script type="application/javascript">
+
+    var mychart=echarts.init(document.getElementById("changes"));
+    $.ajax({
+        url:"/echarts?textno=<%=data.textno%>",
+        method:"POST",
+        dataType:"json",
+        success: function (data) {
+
+            var option ={
+                title: {
+                    text: '行为/修改频率',
+                    left: 'center'
+                },
+                series:{
+                    type:'pie',
+                    data:data,
+                },
+                roseType:'angle',
+                itemStyle: {
+                    normal: {
+                        shadowBlur: 200,
+                        shadowColor: 'rgba(100, 0, 0, 0.5)'
+                    }
+                }
+            };
+            mychart.setOption(option)
+        }
+    })
+    var mychart1=echarts.init(document.getElementById("loginchoices"));
+    $.ajax({
+        url:"/echarts/echarts2?textno=<%=data.textno%>&groupno=<%=data.groupno%>",
+        method:"POST",
+        dataType:"json",
+        success:function (data) {
+            var option={
+                title:{
+                    text:"行为/登录次数",
+                    left: 'center'
+                },
+                series: {
+                    type:'pie',
+                    data:data
+                },
+                roseType:'angle',
+                itemStyle: {
+                    normal: {
+                        shadowBlur: 200,
+                        shadowColor: 'rgba(100, 0, 0, 0.5)'
+                    }
+                }
+            };
+            mychart1.setOption(option)
+        }
+    })
+    var mychart2=echarts.init(document.getElementById("talks"));
+    $.ajax({
+        url:"/echarts/echarts3?textno=<%=data.textno%>&groupno=<%=data.groupno%>",
+        method:"POST",
+        dataType:"json",
+        success:function (data) {
+            var option={
+                title:{
+                    text:"行为/交流次数",
+                    left: 'center'
+                },
+                series: {
+                    type:'pie',
+                    data:data
+                },
+                roseType:'angle',
+                itemStyle: {
+                    normal: {
+                        shadowBlur: 200,
+                        shadowColor: 'rgba(100, 0, 0, 0.5)'
+                    }
+                }
+            };
+            mychart2.setOption(option)
+        }
+    })
+    var mychart3=echarts.init(document.getElementById("socials"));
+    $.ajax({
+        url:"/echarts/echarts4?groupno=<%=data.groupno%>&textno=<%=data.textno%>",
+        method:"POST",
+        dataType:"json",
+        success: function (graph) {
+            graph.nodes.forEach(function (node) {
+                node.label = {
+                    show: node.symbolSize > 30
+                };
+            });
+            option = {
+                title: {
+                    text: '社会网络关系图',
+                    top: 'bottom',
+                    left: 'right'
+                },
+                tooltip: {},
+                legend: [{
+                    // selectedMode: 'single',
+                    data: graph.categories.map(function (a) {
+                        return a.name;
+                    })
+                }],
+                animationDuration: 1500,
+                animationEasingUpdate: 'quinticInOut',
+                series: [
+                    {
+                        name: '社会网络关系图',
+                        type: 'graph',
+                        layout: 'none',
+                        data: graph.nodes,
+                        links: graph.links,
+                        categories: graph.categories,
+                        roam: true,
+                        label: {
+                            position: 'right',
+                            formatter: '{b}'
+                        },
+                        lineStyle: {
+                            color: 'source',
+                            curveness: 0.3
+                        },
+                        emphasis: {
+                            focus: 'adjacency',
+                            lineStyle: {
+                                width: 10
+                            }
+                        }
+                    }
+                ]
+            };
+
+            mychart3.setOption(option)
+        }
+    })
+
+</script>
+
+<!--边框美化-->
+<img src="border.png" />
