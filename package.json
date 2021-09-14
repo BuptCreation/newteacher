@@ -31,8 +31,8 @@
     "cookie-parser": "^1.4.5",
     "debug": "^2.6.9",
     "ejs": "^3.1.6",
+    "eventproxy": "^1.0.0",
     "express-session": "^1.17.2",
-
     "express-ws": "^5.0.2",
     "fs": "^0.0.1-security",
     "http-errors": "^1.7.2",

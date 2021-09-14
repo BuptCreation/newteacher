@@ -1,6 +1,10 @@
 var express=require("express")
 var router=express.Router()
 var model=require("../modules/model")
+var eventProxy=require("eventproxy");
+var ep5=new eventProxy();
+
+
 
 router.post('/',function (req,res,next) {
     var textno=req.query.textno;
@@ -11,13 +15,13 @@ router.post('/',function (req,res,next) {
             if(err){
                 console.log("dataarrays查询组成echarts失败!")
             }else{
-                // console.log(ret)
+                console.log("dataarrays的返回结果是:",ret)
                 if(ret!==null){
                     for(var i=0;i<ret[0].authors.length;i++){
                         answerdata.push({value:ret[0].contributions[i],name:ret[0].authors[i]})
                     }
                 }
-                //console.log(answerdata)
+                console.log("第一个图表可视化的内容",answerdata)
                 res.json(answerdata)
             }
         })
@@ -33,7 +37,7 @@ router.post('/echarts2',function (req,res,next) {
     model.connect(function (db) {
         var authors=[];
         var logintimes=[];
-        db.collection("buptgroup").find({groupid:""+groupid}).toArray(function (err,ret) {
+        db.collection("buptgroup").find({groupid:parseInt(groupid)}).toArray(function (err,ret) {
             if(err){
                 console.log("有一定的问题耶！",err)
             }else{
@@ -45,7 +49,7 @@ router.post('/echarts2',function (req,res,next) {
                 for(var t=0;t<authors.length;t++){
                     answer.push({value:logintimes[t],name:authors[t]});
                 }
-                console.log(answer)
+                console.log("answer的数据是",answer)
                 res.json(answer);
             }
 
@@ -55,7 +59,6 @@ router.post('/echarts2',function (req,res,next) {
         })
 
         })
-
 
 router.post('/echarts3',function (req,res,next) {
     var textno=req.query.textno;
@@ -71,38 +74,61 @@ router.post('/echarts3',function (req,res,next) {
                 console.log("查找数据出现了错误")
             }else{
                 var authordatas=[];
-                var talks=[];
-                var finalret=ret;
-                db.collection("buptgroup").find({groupid:""+groupno}).toArray(function (err,ret) {
-                    if(err){
-                        console.log("出现了些许错误!")
-                    }else{
-                        // console.log(ret);
-                        ret.map(function (item,index) {
-                            authordatas.push(item.studentname);
-                            talks.push(0);
-                        })
-                        // console.log("finalret的结果是：",finalret)
-                        finalret.map(function (item,index) {
-                            for (var j = 0; j < authordatas.length; j++) {
-                                // console.log(item.sender)
-                                if (item.sender === authordatas[j]) {
-                                    talks[j]++;
+                var talks = [];
+                if(ret.length!==0) {
+
+                    var finalret = ret;
+                    db.collection("buptgroup").find({groupid: parseInt(groupno)}).toArray(function (err, ret) {
+                        if (err) {
+                            console.log("出现了些许错误!")
+                        } else {
+                            // console.log(ret);
+
+                            ret.map(function (item, index) {
+                                authordatas.push(item.studentname);
+                                talks.push(0);
+                            })
+                            // console.log("finalret的结果是：",finalret)
+                            finalret.map(function (item, index) {
+                                for (var j = 0; j < authordatas.length; j++) {
+                                    // console.log(item.sender)
+                                    if (item.sender === authordatas[j]) {
+                                        talks[j]++;
+                                    }
                                 }
+                            })
+                            // console.log("talks的结果是：",talks)
+                            // console.log("authordatas的结果是",authordatas)
+                            // console.log(talks,authordatas)
+                            var arrays = [];
+                            for (var i = 0; i < talks.length; i++) {
+                                arrays.push({value: talks[i], name: authordatas[i]});
                             }
-                        })
-                        // console.log("talks的结果是：",talks)
-                        // console.log("authordatas的结果是",authordatas)
-                        // console.log(talks,authordatas)
-                        var arrays=[];
-                        for(var i=0;i<talks.length;i++){
-                            arrays.push({value:talks[i],name:authordatas[i]});
+                            res.json(arrays);
                         }
-                        res.json(arrays);
-                    }
-                })
-
-
+                    })
+                }else{
+                    db.collection("buptgroup").find({groupid: parseInt(groupno)}).toArray(function (err, ret) {
+                        if (err) {
+                            console.log("出现了些许错误!")
+                        } else {
+                            // console.log(ret);
+                            ret.map(function (item, index) {
+                                authordatas.push(item.studentname);
+                                talks.push(0);
+                            })
+                            // console.log("finalret的结果是：",finalret)
+                            // console.log("talks的结果是：",talks)
+                            // console.log("authordatas的结果是",authordatas)
+                            // console.log(talks,authordatas)
+                            var arrays = [];
+                            for (var i = 0; i < talks.length; i++) {
+                                arrays.push({value: talks[i], name: authordatas[i]});
+                            }
+                            res.json(arrays);
+                        }
+                    })
+                }
             }
         })
 
@@ -121,10 +147,11 @@ router.post('/echarts4',function (req,res,next) {
     var positionx=[-83,-20,48,42,50,0,6,-30,-64,-150,-200,-17,-67,0,-100,10,10,-50];
     var positiony=[120,49,47,235,-75,81,100,95,200,90,46,-1,-36,35,40,48,150,160];
     model.connect(function (db) {
-        db.collection("chatmessage").find({groupid:""+groupno}).toArray(function (err,ret) {
+        db.collection("chatmessage").find({groupid:parseInt(groupno)}).toArray(function (err,ret) {
             if(err){
                 console.log("查询socials数据出现了错误！")
             }else{
+                let mapping=[];
                 if(ret){
                     let retfather=ret;
                     //对数据进行初步的处理，把各种数组全部都统计完毕
@@ -134,7 +161,6 @@ router.post('/echarts4',function (req,res,next) {
                     let connectionsandvalues=[];//关联和数值
                     let totalconnectionvalues=0; //统计总的connections的数量
                     let totaltalkvalues=0;       //统计总的talk的数量
-                    let mapping=[];
                     db.collection("buptgroup").find({groupid:parseInt(groupno)}).toArray(function (err,ret) {
                         if(err){
                             console.log("查找数据出现了问题！")
@@ -150,8 +176,6 @@ router.post('/echarts4',function (req,res,next) {
                                     for(var i=0;i<authors.length;i++){
                                         authorsandvalues.push(1);
                                     }
-
-
                                     for(var i=0;i<authors.length;i++){                                      //把学号一一映射成username
                                        for(var j=0;j<mapping.length;j++){
                                            if(mapping[j].studentno===authors[i]){
@@ -201,8 +225,6 @@ router.post('/echarts4',function (req,res,next) {
                                     for(var c=0;c<authorsandvalues.length;c++){
                                         authorsandvalues[c]=parseInt((25*(authors.length)*authorsandvalues[c])/totaltalkvalues);
                                     }
-
-
                                     //将所有的数据转换成合适的格式
                                     for(var i=0;i<authors.length;i++){
                                         nodes.push({id:authors[i],name:authors[i],symbolSize:authorsandvalues[i],x:positionx[i],y:positiony[i],value:authorsandvalues[i],category:categories[i]});
@@ -220,14 +242,55 @@ router.post('/echarts4',function (req,res,next) {
                                     res.json({nodes:nodes,links:links,categories:categoriestosubmit});
                                 }
                             })
-
                         }
                     })
 
+                }else{
+                    db.collection("buptgroup").find({groupno:parseInt(groupno)}).toArray(function (err,ret) {
+                        if(err){
+                            console.log("出现了一些错误!")
+                        }
+                        else{
+                            var nodes=[];
+                            for(var t=0;t<ret.length;t++){
+                                mapping.push({studentno:ret[t].studentno,studentname:ret[t].studentname});
+                            }
+                            for(var i=0;i<ret.length;i++){
+                                nodes.push({id:mapping[i].studentname,name:mapping[i].studentname,symbolSize:5,x:positionx[i],y:positiony[i],value:5,category:categories[i]});
+                                links.push({})
+                            }
+                            var categories2=[];
+                            for(var o=0;o<ret.length;o++){
+                                categories.push({name:categories2[o]});
+                            }
+                            res.json({nodes:nodes,links:links,categories:categories2});
+                }})
                 }
             }
         })
     })
 })
-
+router.post('/echarts5',function (req,res,next) {
+    var articletitle=req.query.textno;
+    var authors=[];             //记录所有参与写作的作者的信息!
+    var contributions=[];
+    var analysisdata=[];
+    var timestamp=[];
+    model.connect(function (db,client) {
+            db.collection("timelinecao").find({textno:articletitle}).toArray(function (err,ret) {
+                if(err){
+                    console.log("出现了一些小小的错误!")
+                }else{
+                    authors=ret[0].authors;
+                    ret.map(function (item,index) {
+                        contributions.push(item.contributions);
+                        timestamp.push(item.timestamp);
+                    })
+                }
+            })
+            console.log("这是时间戳",timestamp);
+            console.log("这是贡献度",contributions)
+            console.log("这是作者",authors)
+    })
+})
 module.exports = router;

@@ -41,11 +41,21 @@ console.log('The sharedbserver Listening on http://localhost:8085');
 
 router.get('/createarticle',function(req,res,next){
     let teacherno=req.query.teacherno;
-    console.log("已经进入该方法了！")
+    console.log("已经进入该方法了！");
     var articlename = req.query.title;
+    var times=req.query.type;
+    if(times="many"){
+        var nums=articlename.split(' ');
+        for(var t=0;t<nums.length;t++){
+            console.log(nums[t]);
+            createDoc(nums[t]);
+            createreflectionDoc(""+nums[t]+"reflection")
+        }
+    }else if(times=="one"){
+        createDoc(articlename);
+        createreflectionDoc(""+articlename+"reflection")
+    }
 
-    createDoc(articlename);
-    createreflectionDoc(articlename+'reflection')
 // Create initial document then fire callback
     console.log(articlename);
 // Create initial document then fire callback

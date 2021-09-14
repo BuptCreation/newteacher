@@ -90,7 +90,8 @@
                 <label class="col-sm-2 control-label" style="color:white;">发布任务的小组名称：</label>
                 <div class="col-sm-10">
                     <select class="form-control" id="focusedInput" type="text" name="groupno" value="" placeholder="请输入小组的编号">
-                       <%for(var i=0;i<arrays.length;i++){%>
+                            <option value="all">选择所有的小组</option>
+                        <%for(var i=0;i<arrays.length;i++){%>
                             <option value="<%=arrays[i]%>"><%=arrays[i]%></option>
                         <%}%>
                     </select>
