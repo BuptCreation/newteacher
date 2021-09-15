@@ -1,9 +1,9 @@
+
 var express=require("express")
 var router=express.Router()
 var model=require("../modules/model")
 var eventProxy=require("eventproxy");
 var ep5=new eventProxy();
-
 
 
 router.post('/',function (req,res,next) {
@@ -276,21 +276,39 @@ router.post('/echarts5',function (req,res,next) {
     var contributions=[];
     var analysisdata=[];
     var timestamp=[];
+    var yline=[];
+    var Date=[];
     model.connect(function (db,client) {
             db.collection("timelinecao").find({textno:articletitle}).toArray(function (err,ret) {
+                console.log("echarts5的："+ret)
                 if(err){
                     console.log("出现了一些小小的错误!")
                 }else{
                     authors=ret[0].authors;
+                    yline.push("时间轴")
                     ret.map(function (item,index) {
                         contributions.push(item.contributions);
                         timestamp.push(item.timestamp);
+                        yline.push(item.timestamp);
                     })
                 }
+                //打包中
+                Date.push(yline);
+                for (var i=0;i<authors.length;i++){
+                    var temp=[];
+                    temp.push(String(authors[i]));
+                    for (var j=0;j<contributions.length;j++){
+                        temp.push(contributions[j][i]);
+                    }
+                    Date.push(temp);
+                }
+                console.log("包裹",Date);
+                console.log("这是时间戳",timestamp);
+                console.log("这是贡献度",contributions);
+                console.log("这是作者",authors);
+                res.json(Date);
             })
-            console.log("这是时间戳",timestamp);
-            console.log("这是贡献度",contributions)
-            console.log("这是作者",authors)
+
     })
 })
 module.exports = router;

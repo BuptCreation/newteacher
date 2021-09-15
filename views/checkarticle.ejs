@@ -88,7 +88,6 @@
         <button onclick="javascript:window.location.href='/teacher/allowstudenttoshow?type='+'1y'+'&data=<%=JSON.stringify(data)%>'" >禁止学生端显示修改次数的可视化图表</button>
         <div class="chart" style="height: 700px;width: 1000px" id="changes"></div>
         <button onclick="javascript:window.location.href='/teacher/allowstudenttoshow?type='+'1n'+'&data=<%=JSON.stringify(data) %>'">允许学生端显示该可视化图表</button>>
-
         <button onclick="javascript:window.location.href='/teacher/allowstudenttoshow?type='+'2y'+'&data=<%=JSON.stringify(data)%>'" >禁止学生端显示修改次数的可视化图表</button>
         <div class="chart" style="height: 700px;width: 1000px" id="loginchoices"></div>
         <button onclick="javascript:window.location.href='/teacher/allowstudenttoshow?type='+'2n'+'&data=<%=JSON.stringify(data) %>'">允许学生端显示该可视化图表</button>
@@ -100,7 +99,7 @@
         <button onclick="javascript:window.location.href='/teacher/allowstudenttoshow?type='+'4y'+'&data=<%=JSON.stringify(data)%>'" >禁止学生端显示修改次数的可视化图表</button>
         <div class="chart" style="height: 700px;width: 1000px" id="socials"></div>
         <button onclick="javascript:window.location.href='/teacher/allowstudenttoshow?type='+'4n'+'&data=<%=JSON.stringify(data) %>'">允许学生端显示该可视化图表</button>
-
+        <div class="chart" style="height: 700px;width: 1000px" id="timeline"></div>
 
     </div>
 </div>
@@ -244,7 +243,107 @@
             mychart3.setOption(option)
         }
     })
+    // var mychart4=echarts.init(document.getElementById("timeline"));
+    var dom = document.getElementById("timeline");
+    var myChart5 = echarts.init(dom);
+    var app = {};
 
+    var option;
+    var database
+
+    $.ajax({
+        url:"/echarts/echarts5?textno=<%=data.textno%>&groupno=<%=data.groupno%>",
+        method:"POST",
+        dataType:"json",
+        success:function (data) {
+            database=data;
+            console.log(database);
+            for (var i=1;i<database[0].length;i++){
+                database[0][i]=database[0][i].slice(5,18).replace(/T/," ");
+            }
+            setTimeout(function () {
+                option = {
+                    legend: {},
+                    tooltip: {
+                        trigger: 'axis'
+                        // showContent: false
+                    },
+                    dataset: {
+                        source: database
+                    },
+                    xAxis: {type: 'category'},
+                    yAxis: {gridIndex: 0},
+                    grid: {top: '55%'},
+                    series: [
+                        // {type: 'line', smooth: true, seriesLayoutBy: 'row', emphasis: {focus: 'series'}},
+                        // {type: 'line', smooth: true, seriesLayoutBy: 'row', emphasis: {focus: 'series'}},
+                        // {type: 'line', smooth: true, seriesLayoutBy: 'row', emphasis: {focus: 'series'}},
+                        // {type: 'line', smooth: true, seriesLayoutBy: 'row', emphasis: {focus: 'series'}},
+                        // {
+                        //     type: 'pie',
+                        //     id: 'pie',
+                        //     radius: '30%',
+                        //     center: ['50%', '25%'],
+                        //     emphasis: {focus: 'data'},
+                        //     label: {
+                        //         formatter: '{b}:'+'共修改文章'+'{@'+1+'}'+'次'+'({d}%)'
+                        //     },
+                        //     encode: {
+                        //         itemName: '稿子',
+                        //         value: 1,
+                        //         tooltip: 1
+                        //     }
+                        // }
+                    ]
+                };
+
+                myChart5.on('updateAxisPointer', function (event) {
+                    var xAxisInfo = event.axesInfo[0];
+                    if (xAxisInfo) {
+                        var dimension = xAxisInfo.value + 1;
+                        myChart5.setOption({
+                            series: {
+                                id: 'pie',
+                                label: {
+                                    formatter: '{@'+0+'}:'+'共修改文章'+'{@'+dimension+'}'+'次'+'({d}%)'
+                                },
+                                encode: {
+                                    value: dimension,
+                                    tooltip: dimension
+                                }
+                            }
+                        });
+                    }
+                });
+                for (var i=0;i<database.length-1;i++){
+                    var temp ={type: 'line', smooth: true, seriesLayoutBy: 'row', emphasis: {focus: 'series'},stack:'all'}
+                    option.series.push(temp)
+                }
+                var temp={
+                    type: 'pie',
+                    id: 'pie',
+                    radius: '30%',
+                    center: ['50%', '25%'],
+                    emphasis: {focus: 'data'},
+                    label: {
+                        formatter: '{@'+0+'}:'+'共修改文章'+'{@'+1+'}'+'次'+'({d}%)'
+                    },
+                    encode: {
+                        itemName: '稿子',
+                        value: 1,
+                        tooltip: 1
+                    }
+                }
+                option.series.push(temp)
+                myChart5.setOption(option);
+
+            });
+
+            if (option && typeof option === 'object') {
+                myChart5.setOption(option);
+            }
+        }
+    })
 </script>
 
 <!--边框美化-->
