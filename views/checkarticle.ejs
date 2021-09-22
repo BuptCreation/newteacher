@@ -33,9 +33,9 @@
 </head>
 <body>
 <div class="cr cr-top cr-left cr-sticky cr-red">Hello</div>
-<div class="cr cr-top cr-right cr-sticky cr-blue">hi</div>
-<div class="cr cr-bottom cr-left cr-sticky cr-orange">hello there</div>
-<div class="cr cr-bottom cr-right cr-sticky cr-green">hei</div>
+<!--<div class="cr cr-top cr-right cr-sticky cr-blue">hi</div>-->
+<!--<div class="cr cr-bottom cr-left cr-sticky cr-orange">hello there</div>-->
+<!--<div class="cr cr-bottom cr-right cr-sticky cr-green">hei</div>-->
 <div style="flex-direction: column">
     <div class="col-sm-offset-3 col-sm-6">
         <label class="col-sm-offset-1">文章编号:</label>
@@ -271,8 +271,22 @@
                     dataset: {
                         source: database
                     },
-                    xAxis: {type: 'category'},
+                    xAxis: {type: 'category',
+                        min: 'dataMin',
+                        max: 'dataMax',
+                        splitLine: {
+                            show: true
+                        }},
                     yAxis: {gridIndex: 0},
+                    dataZoom: [
+                        {
+                            type: 'slider',
+                            show: true,
+                            xAxisIndex: [0],
+                            start: 1,
+                            end: 99
+                        }
+                    ],
                     grid: {top: '55%'},
                     series: [
                         // {type: 'line', smooth: true, seriesLayoutBy: 'row', emphasis: {focus: 'series'}},
