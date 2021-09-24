@@ -263,6 +263,11 @@
             }
             setTimeout(function () {
                 option = {
+                    title: {
+                        text: '行为/修改次数',
+                        top: 'bottom',
+                        left: 'right'
+                    },
                     legend: {},
                     tooltip: {
                         trigger: 'axis'
@@ -289,25 +294,6 @@
                     ],
                     grid: {top: '55%'},
                     series: [
-                        // {type: 'line', smooth: true, seriesLayoutBy: 'row', emphasis: {focus: 'series'}},
-                        // {type: 'line', smooth: true, seriesLayoutBy: 'row', emphasis: {focus: 'series'}},
-                        // {type: 'line', smooth: true, seriesLayoutBy: 'row', emphasis: {focus: 'series'}},
-                        // {type: 'line', smooth: true, seriesLayoutBy: 'row', emphasis: {focus: 'series'}},
-                        // {
-                        //     type: 'pie',
-                        //     id: 'pie',
-                        //     radius: '30%',
-                        //     center: ['50%', '25%'],
-                        //     emphasis: {focus: 'data'},
-                        //     label: {
-                        //         formatter: '{b}:'+'共修改文章'+'{@'+1+'}'+'次'+'({d}%)'
-                        //     },
-                        //     encode: {
-                        //         itemName: '稿子',
-                        //         value: 1,
-                        //         tooltip: 1
-                        //     }
-                        // }
                     ]
                 };
 

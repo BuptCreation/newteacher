@@ -15,6 +15,10 @@ var bodyParser = require('body-parser');
 var indexRouter = require('../routes/index')
 var lookRouter = require('../routes/lookarticle')
 var eChartsRouter = require("../routes/echarts")
+var TimelineRouter = require('../routes/Timeline');
+var TalknetRouter = require('../routes/Talknet');
+var TalkcountRouter = require('../routes/Talkcount');
+var LogincountRouter = require('../routes/Logincount');
 // import studentRouter from "../routes/student"
 // import teacherRouter from '../routes/teacher';
 // import createRouter from '../routes/article'
@@ -51,7 +55,11 @@ app.use('/',indexRouter);           //各个路由模块
 app.use('/teacher',teacherRouter);
 app.use('/createarticle',createRouter);
 app.use('/lookarticle',lookRouter);
-app.use('/echarts',eChartsRouter)
+app.use('/echarts',eChartsRouter);
+app.use('/Timeline',TimelineRouter);
+app.use('/Talknet',TalknetRouter);
+app.use('/Talkcount',TalkcountRouter);
+app.use('/Logincount',LogincountRouter);
 // error handler
 
 app.set('port',8082);

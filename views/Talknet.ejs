@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script type="text/javascript" src="/echarts.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <!--    vue-基础包导入-->
+    <script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+<!--    复选框美化 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel="stylesheet" type="text/css" href="style-checkbox.css"/>
+
+    <title>时间轴/修改</title>
+    <style>
+        /*按钮美化*/
+        .butt {
+            margin: 10px;
+            float: right;
+            width: 100px;
+            height: 30px;
+            background-color: white;
+            color: black;
+            align-self: center;
+            border: 2px solid #555555;
+        }
+        .butt:hover {
+            background-color: #555555;
+            color: white;
+        }
+        /*弹窗*/
+        .mask{
+            z-index: 999;
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .box{
+            background: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            width: 30%;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+<!--    {{mask}}-->
+<!--    <br/>-->
+<!--    {{textno}}-->
+    <button class="butt" @click="show()">更换</button>
+    <div class="mask" v-if="mask" @click="close()">
+        <div class="box" @click.stop="">
+            <%for(var i=0;i<data.length;i++){%>
+            <input id="<%=data[i].textno%>" name="textno" value="<%=data[i].textno%>" type="radio" v-model="textno"/>
+            <label for="<%=data[i].textno%>">标题:<%=data[i].title%>小组号:<%=data[i].groupno%></label>
+            <br/>
+            <%}%>
+            <button class="butt" @click="Active()">确定</button>
+        </div>
+
+    </div>
+</div>
+    <div class="chart" style="height: 700px;width: 1000px" id="socials"></div>
+</body>
+</html>
+<!--选择textno和groupno-->
+<script>
+    var vm = new Vue({
+        el:'#app',
+        data:{
+            textno:1,
+            mask:false
+        },
+        methods:{
+            show(){
+                this.mask=!this.mask;
+            },
+            close(){
+                this.mask=!this.mask;
+            },
+            Active(){
+                var mychart3=echarts.init(document.getElementById("socials"));
+                $.ajax({
+                    url:"/echarts/echarts4?groupno=0&textno="+this.textno,
+                    method:"POST",
+                    dataType:"json",
+                    success: function (graph) {
+                        graph.nodes.forEach(function (node) {
+                            node.label = {
+                                show: node.symbolSize > 30
+                            };
+                        });
+                        option = {
+                            title: {
+                                text: '社会网络关系图',
+                                top: 'bottom',
+                                left: 'right'
+                            },
+                            tooltip: {},
+                            legend: [{
+                                // selectedMode: 'single',
+                                data: graph.categories.map(function (a) {
+                                    return a.name;
+                                })
+                            }],
+                            animationDuration: 1500,
+                            animationEasingUpdate: 'quinticInOut',
+                            series: [
+                                {
+                                    name: '社会网络关系图',
+                                    type: 'graph',
+                                    layout: 'none',
+                                    data: graph.nodes,
+                                    links: graph.links,
+                                    categories: graph.categories,
+                                    roam: true,
+                                    label: {
+                                        position: 'right',
+                                        formatter: '{b}'
+                                    },
+                                    lineStyle: {
+                                        color: 'source',
+                                        curveness: 0.3
+                                    },
+                                    emphasis: {
+                                        focus: 'adjacency',
+                                        lineStyle: {
+                                            width: 10
+                                        }
+                                    }
+                                }
+                            ]
+                        };
+
+                        mychart3.setOption(option)
+                    }
+                })
+            }
+        }
+    })
+</script>
+<!--图表-->
+
+<!--<script>-->
+
+<!--    $(function(){-->
+
+<!--    var dom = document.getElementById("timeline");-->
+<!--    var myChart5 = echarts.init(dom);-->
+<!--    var app = {};-->
+
+<!--    var option;-->
+<!--    var database;-->
+<!--    $.ajax({-->
+<!--        url:"/echarts/echarts5?textno=1&groupno=0",-->
+<!--        method:"POST",-->
+<!--        dataType:"json",-->
+<!--        success:function (data) {-->
+<!--            database=data;-->
+<!--            console.log(database);-->
+<!--            for (var i=1;i<database[0].length;i++){-->
+<!--                database[0][i]=database[0][i].slice(5,18).replace(/T/," ");-->
+<!--            }-->
+<!--            setTimeout(function () {-->
+<!--                option = {-->
+<!--                    title: {-->
+<!--                        text: '行为/修改次数',-->
+<!--                        top: 'bottom',-->
+<!--                        left: 'right'-->
+<!--                    },-->
+<!--                    legend: {},-->
+<!--                    tooltip: {-->
+<!--                        trigger: 'axis'-->
+<!--                        // showContent: false-->
+<!--                    },-->
+<!--                    dataset: {-->
+<!--                        source: database-->
+<!--                    },-->
+<!--                    xAxis: {type: 'category',-->
+<!--                        min: 'dataMin',-->
+<!--                        max: 'dataMax',-->
+<!--                        splitLine: {-->
+<!--                            show: true-->
+<!--                        }},-->
+<!--                    yAxis: {gridIndex: 0},-->
+<!--                    dataZoom: [-->
+<!--                        {-->
+<!--                            type: 'slider',-->
+<!--                            show: true,-->
+<!--                            xAxisIndex: [0],-->
+<!--                            start: 1,-->
+<!--                            end: 99-->
+<!--                        }-->
+<!--                    ],-->
+<!--                    grid: {top: '55%'},-->
+<!--                    series: [-->
+<!--                    ]-->
+<!--                };-->
+
+<!--                myChart5.on('updateAxisPointer', function (event) {-->
+<!--                    var xAxisInfo = event.axesInfo[0];-->
+<!--                    if (xAxisInfo) {-->
+<!--                        var dimension = xAxisInfo.value + 1;-->
+<!--                        myChart5.setOption({-->
+<!--                            series: {-->
+<!--                                id: 'pie',-->
+<!--                                label: {-->
+<!--                                    formatter: '{@'+0+'}:'+'共修改文章'+'{@'+dimension+'}'+'次'+'({d}%)'-->
+<!--                                },-->
+<!--                                encode: {-->
+<!--                                    value: dimension,-->
+<!--                                    tooltip: dimension-->
+<!--                                }-->
+<!--                            }-->
+<!--                        });-->
+<!--                    }-->
+<!--                });-->
+<!--                for (var i=0;i<database.length-1;i++){-->
+<!--                    var temp ={type: 'line', smooth: true, seriesLayoutBy: 'row', emphasis: {focus: 'series'},stack:'all'}-->
+<!--                    option.series.push(temp)-->
+<!--                }-->
+<!--                var temp={-->
+<!--                    type: 'pie',-->
+<!--                    id: 'pie',-->
+<!--                    radius: '30%',-->
+<!--                    center: ['50%', '25%'],-->
+<!--                    emphasis: {focus: 'data'},-->
+<!--                    label: {-->
+<!--                        formatter: '{@'+0+'}:'+'共修改文章'+'{@'+1+'}'+'次'+'({d}%)'-->
+<!--                    },-->
+<!--                    encode: {-->
+<!--                        itemName: '稿子',-->
+<!--                        value: 1,-->
+<!--                        tooltip: 1-->
+<!--                    }-->
+<!--                }-->
+<!--                option.series.push(temp)-->
+<!--                myChart5.setOption(option);-->
+
+<!--            });-->
+
+<!--            if (option && typeof option === 'object') {-->
+<!--                myChart5.setOption(option);-->
+<!--            }-->
+<!--        }-->
+<!--    })-->
+<!--    });-->
+<!--</script>-->

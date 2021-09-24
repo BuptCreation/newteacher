@@ -1,6 +1,6 @@
 var express = require("express");
 var router=express.Router();
-var model = require("../modules/model")
+var model =require("../modules/model")
 var ws=require("ws")
 var router = express.Router();
 var ws1=require("nodejs-websocket")
@@ -89,7 +89,7 @@ function savetheoriginal(data2,res,textno,groupno,teacherno,texttitle,descriptio
         data.groupno = groupno;
         data.description=description;
         data.texttitle=texttitle;
-        data.teacherno=teacherno;
+        no=teacherno;
     }else{
         var data=data2;
     }
