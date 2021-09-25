@@ -102,7 +102,7 @@
                         database=data;
                         console.log(database);
                         for (var i=1;i<database[0].length;i++){
-                            database[0][i]=database[0][i].slice(5,18).replace(/T/," ");
+                            database[0][i]=database[0][i].slice(5,19).replace(/T/," ");
                         }
                         setTimeout(function () {
                             option = {
@@ -111,7 +111,8 @@
                                     top: 'bottom',
                                     left: 'right'
                                 },
-                                legend: {},
+                                legend: {
+                                },
                                 tooltip: {
                                     trigger: 'axis'
                                     // showContent: false
@@ -172,7 +173,7 @@
                                     formatter: '{@'+0+'}:'+'共修改文章'+'{@'+1+'}'+'次'+'({d}%)'
                                 },
                                 encode: {
-                                    itemName: '稿子',
+                                    itemName: '时间轴',
                                     value: 1,
                                     tooltip: 1
                                 }

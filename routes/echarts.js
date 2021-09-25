@@ -300,6 +300,7 @@ router.post('/echarts5',function (req,res,next) {
                     for (var j=0;j<contributions.length;j++){
                         temp.push(contributions[j][i]);
                     }
+
                     Date.push(temp);
                 }
                 console.log("包裹",Date);
